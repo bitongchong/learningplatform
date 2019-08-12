@@ -1,6 +1,7 @@
 package com.sicau.platform.interceptor;
 
 import com.sicau.platform.entity.HostHolder;
+import com.sicau.platform.exception.UserLoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -29,7 +30,7 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
             throws Exception {
         if (hostHolder.getUser() == null) {
             log.warn("用户未登录");
-            throw new Exception("未登录");
+            throw new UserLoginException("未登录");
         }
         return true;
     }
