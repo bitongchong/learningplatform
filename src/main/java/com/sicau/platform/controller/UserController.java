@@ -101,7 +101,7 @@ public class UserController {
         if (passwordToken != null) {
             Date expired = passwordToken.getExpired();
             if (passwordToken.getStatus() != 0 || new Date().after(expired)) {
-                return new Result(false, StatusCode.TOKENEXPIRED, "token无效");
+                return new Result(false, StatusCode.TOKENEXPIRED, "token无效或已使用");
             }
             boolean initPasswordResult = userService.initPassword(passwordToken.getAccount());
             return initPasswordResult ? new Result(true, StatusCode.OK, "密码已初始化为00000000，登录后请及时更新") :
