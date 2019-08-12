@@ -3,6 +3,7 @@ package com.sicau.platform.controller;
 import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.Result;
 import com.sicau.platform.entity.StatusCode;
+import com.sicau.platform.exception.EmailSendFailException;
 import com.sicau.platform.exception.UserLoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,9 @@ public class GlobalExceptionHandler {
         if (e instanceof UserLoginException) {
             logger.info(e.getMessage());
             return new Result(false, StatusCode.ACCESSERROR, e.getMessage());
+        } else if (e instanceof EmailSendFailException) {
+            logger.error("邮件发送失败");
+            return new Result(false, StatusCode.EMAILSENDFAIL, e.getMessage());
         }
         logger.error("系统发生异常：" + e);
         return new Result(false, StatusCode.INTERNALSERVERERROR, "服务端执行请求时出错");
