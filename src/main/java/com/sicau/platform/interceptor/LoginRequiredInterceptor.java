@@ -29,8 +29,7 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         if (hostHolder.getUser() == null) {
-            log.warn("用户未登录");
-            throw new UserLoginException("未登录");
+            throw new UserLoginException("用户登录状态异常");
         }
         return true;
     }
