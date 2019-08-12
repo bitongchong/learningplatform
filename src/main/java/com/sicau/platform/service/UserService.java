@@ -1,33 +1,36 @@
 package com.sicau.platform.service;
 
 import com.sicau.platform.dao.LoginTicketDao;
+import com.sicau.platform.dao.PasswordTokenDao;
 import com.sicau.platform.dao.UserDao;
 import com.sicau.platform.dao.UserDetailDao;
-import com.sicau.platform.entity.HostHolder;
-import com.sicau.platform.entity.LoginTicket;
-import com.sicau.platform.entity.User;
-import com.sicau.platform.entity.UserDetail;
+import com.sicau.platform.entity.*;
 import com.sicau.platform.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class UserService {
+    private final UserDao userDao;
+    private final UserDetailDao userDetailDao;
+    private final LoginTicketDao loginTicketDao;
+    private final HostHolder hostHolder;
+    private final PasswordTokenDao passwordTokenDao;
+
     @Autowired
-    UserDao userDao;
-    @Autowired
-    UserDetailDao userDetailDao;
-    @Autowired
-    IdGenerator idGenerator;
-    @Autowired
-    LoginTicketDao loginTicketDao;
-    @Autowired
-    HostHolder hostHolder;
+    public UserService(UserDao userDao, UserDetailDao userDetailDao, LoginTicketDao loginTicketDao, HostHolder hostHolder, PasswordTokenDao passwordTokenDao) {
+        this.userDao = userDao;
+        this.userDetailDao = userDetailDao;
+        this.loginTicketDao = loginTicketDao;
+        this.hostHolder = hostHolder;
+        this.passwordTokenDao = passwordTokenDao;
+    }
 
     public User findByUserAccount(String account) {
         return userDao.findByAccount(account);
@@ -49,6 +52,7 @@ public class UserService {
 
     /**
      * 将前端传过来的UserDetail设置好detail的id，然后直接更新
+     *
      * @param userDetail
      * @return 是否成功添加
      */
@@ -60,6 +64,7 @@ public class UserService {
 
     /**
      * 在更新学生详细信息时，先查找userdetail表中当前学生的信息id
+     *
      * @param sid 学生id
      * @return 返回学生信息细节实例
      */
@@ -74,12 +79,38 @@ public class UserService {
         return true;
     }
 
-/*    public boolean findPassword(UserDetail userDetail){
-        UserDetail findUserDetail = userDetailDao.findByIdentity(userDetail.getIdentity());
-        if (findUserDetail != null){
-            findUserDetail.
+    public String findEmailByUserId(Long userId) {
+        UserDetail userDetail = userDetailDao.findBySid(userId);
+        if (Objects.isNull(userDetail.getEmail())) {
+            return null;
+        } else {
+            return userDetail.getEmail();
         }
-    }*/
+    }
+
+    public boolean addPasswordToken(PasswordToken token) {
+        PasswordToken save = passwordTokenDao.save(token);
+        return !Objects.isNull(save);
+    }
+
+    public boolean initPassword(String account) {
+        User user = userDao.findByAccount(account);
+        user.setPassword("00000000");
+        User save = userDao.save(user);
+        return !Objects.isNull(save);
+    }
+
+    public PasswordToken findPasswordToken(Long token) {
+        PasswordToken passwordToken = passwordTokenDao.findByToken(token);
+        return passwordToken;
+    }
+
+    public boolean changePassword(String newPassword) {
+        User user = hostHolder.getUser();
+        user.setPassword(newPassword);
+        User save = userDao.save(user);
+        return !Objects.isNull(save);
+    }
 
     public String addTicket(Long userId) {
         LoginTicket ticket = new LoginTicket();
