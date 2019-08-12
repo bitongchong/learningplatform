@@ -102,6 +102,9 @@ public class UserService {
 
     public PasswordToken findPasswordToken(Long token) {
         PasswordToken passwordToken = passwordTokenDao.findByToken(token);
+        // 代表token已经使用过
+        passwordToken.setStatus(1);
+        passwordTokenDao.save(passwordToken);
         return passwordToken;
     }
 
