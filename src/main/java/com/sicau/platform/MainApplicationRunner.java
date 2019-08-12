@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 
 /**
- * @author boot liu
+ * @author liuyuehe
  */
 @SpringBootApplication
 @EnableCaching
