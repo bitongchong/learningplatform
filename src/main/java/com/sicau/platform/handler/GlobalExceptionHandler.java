@@ -29,6 +29,7 @@ public class GlobalExceptionHandler {
             logger.error("邮件发送失败");
             return new Result(false, StatusCode.EMAILSENDFAIL, e.getMessage());
         }
+        e.printStackTrace();
         logger.error("系统发生异常：" + e);
         return new Result(false, StatusCode.INTERNALSERVERERROR, "服务端执行请求时出错");
     }
