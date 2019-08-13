@@ -7,8 +7,6 @@ import com.sicau.platform.entity.StatusCode;
 import com.sicau.platform.exception.EmailSendFailException;
 import com.sicau.platform.service.PasswordService;
 import com.sicau.platform.service.UserService;
-import com.sicau.platform.util.IdGenerator;
-import com.sicau.platform.util.MailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,12 +58,15 @@ public class PasswordController {
     }
 
     @PostMapping("/changePassword")
-    public Result changePassword(String oldPassword, String newPassword) {
-        if (Objects.equals(hostHolder.getUser().getPassword(), oldPassword)) {
-            passwordService.changePassword(newPassword);
-            return new Result(true, StatusCode.OK, "密码修改成功");
-        } else {
-            return new Result(false, StatusCode.PASSWORDERRO, "旧密码错误");
+    public Result changePassword(String oldPassword, String newPassword, String repeatPassword) {
+        if (Objects.equals(newPassword, repeatPassword)) {
+            if (Objects.equals(hostHolder.getUser().getPassword(), oldPassword)) {
+                passwordService.changePassword(newPassword);
+                return new Result(true, StatusCode.OK, "密码修改成功");
+            } else {
+                return new Result(false, StatusCode.PASSWORDERRO, "旧密码错误");
+            }
         }
+        return new Result(false, StatusCode.PASSWORDERRO, "两次输入密码不相同");
     }
 }
