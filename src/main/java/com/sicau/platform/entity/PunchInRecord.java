@@ -22,7 +22,7 @@ import java.util.Date;
 @Table(name = "punch_in_record")
 public class PunchInRecord {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer recordId;
     private Long userId;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
