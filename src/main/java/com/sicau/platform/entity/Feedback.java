@@ -26,6 +26,6 @@ public class Feedback {
     String title;
     String content;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    Date createDate;
+    Date createTime;
     String contact;
 }

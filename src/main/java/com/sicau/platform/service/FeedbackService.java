@@ -22,7 +22,7 @@ public class FeedbackService {
     FeedbackDao feedbackDao;
 
     public boolean initiatFeedback(Feedback feedback) {
-        feedback.setCreateDate(new Date());
+        feedback.setCreateTime(new Date());
         Feedback saveResult = feedbackDao.save(feedback);
         return Objects.nonNull(saveResult);
     }

@@ -1,4 +1,4 @@
-package com.sicau.platform.controller;
+package com.sicau.platform.handler;
 
 import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.Result;
