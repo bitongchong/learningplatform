@@ -4,6 +4,7 @@ import com.sicau.platform.dao.StudyRecordDao;
 import com.sicau.platform.entity.*;
 import com.sicau.platform.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,6 +26,9 @@ public class StudyRecordService {
     HostHolder hostHolder;
     @Autowired
     PunchInRecordService punchInRecordService;
+    @Value("${read_time}")
+    Integer timeNeedToRead;
+    private static final Integer ONEMINITE = 60 * 1000;
 
     public boolean initRecord(Article article) {
         StudyRecord findRecord = studyRecordDao.findRecord(article.getArticleId(), hostHolder.getUser().getUserid());
@@ -61,7 +65,7 @@ public class StudyRecordService {
         }
         studyRecord.setStatus(RecordStatus.FINISH);
         // todo 改成配置文件修改，这儿设置为3秒进行测试
-        if (now.getTime() - studyRecord.getOpenTime().getTime() <  3 * 1000) {
+        if (now.getTime() - studyRecord.getOpenTime().getTime() <  timeNeedToRead * ONEMINITE) {
             return new Result(false, StatusCode.ARTICLRUNFINISH, "阅读时间不够");
         }
         studyRecord.setAccomplishTime(now);

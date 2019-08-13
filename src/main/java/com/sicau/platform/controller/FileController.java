@@ -34,7 +34,7 @@ public class FileController {
                              @RequestParam("fileType") Integer fileType) throws Exception {
         String path = request.getSession().getServletContext().getRealPath("upload");
         Long fileId = fileService.uploadFile(file, path, fileType);
-        // TODO 字符串拼接，资源消耗大，不优雅
+        // TODO 字符串拼接，资源消耗大，不优雅，用guava来优化一下
         String url = "/file/download?fileId=" + fileId;
         if (findFile(fileId)) {
             return new Result(true, StatusCode.OK, "文件上传成功", url);
@@ -43,9 +43,9 @@ public class FileController {
         }
     }
 
-    public Boolean findFile(Long fileId) {
+    private Boolean findFile(Long fileId) {
         FileEntity fileById = fileService.getFileById(fileId);
-        return fileById != null ? true : false;
+        return fileById != null;
     }
 
     @DeleteMapping("/file/delete/{fileId}")
