@@ -19,7 +19,7 @@ public class StudyRecordController {
     /**
      * 这儿其实可以在获取文章详情页的时候，返回一个studyId，通过这个id在study_record表中查
      */
-    public Result finishStudy(@Param("articleId") Long articleId) {
+    public Result finishStudy(@Param("articleId") Long articleId) throws Exception {
         StudyRecord record = studyRecordService.findRecord(articleId);
         return studyRecordService.finishRecord(record);
     }
