@@ -55,7 +55,7 @@ public class StudyRecordService {
 
     public Result finishRecord(StudyRecord studyRecord) throws Exception {
         // 这儿和前面所有的service都可以独立封装出一个专门反会结果的类，来封装result和msg
-        HashMap<String, String> map = new HashMap<>(16);
+        HashMap<String, String> map = new HashMap<>();
         Date now = new Date();
         if (studyRecord == null) {
             return new Result(true, StatusCode.ARTICLEUNREAD, "请先点击文章进行阅读");
