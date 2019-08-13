@@ -14,3 +14,4 @@ spring:
 punch_in_number: 3
 multipart.maxFileSize: 200
 multipart.maxRequestSize: 200
+read_time: 5
