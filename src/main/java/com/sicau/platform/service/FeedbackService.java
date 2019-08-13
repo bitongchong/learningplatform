@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -21,6 +22,7 @@ public class FeedbackService {
     FeedbackDao feedbackDao;
 
     public boolean initiatFeedback(Feedback feedback) {
+        feedback.setCreateDate(new Date());
         Feedback saveResult = feedbackDao.save(feedback);
         return Objects.nonNull(saveResult);
     }
