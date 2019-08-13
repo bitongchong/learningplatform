@@ -1,39 +1,46 @@
 package com.sicau.platform.service;
 
 import com.sicau.platform.dao.LoginTicketDao;
-import com.sicau.platform.dao.PasswordTokenDao;
 import com.sicau.platform.dao.UserDao;
 import com.sicau.platform.dao.UserDetailDao;
-import com.sicau.platform.entity.*;
+import com.sicau.platform.entity.HostHolder;
+import com.sicau.platform.entity.LoginTicket;
+import com.sicau.platform.entity.User;
+import com.sicau.platform.entity.UserDetail;
 import com.sicau.platform.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * @author boot liu
+ */
 @Service
-@Transactional
 public class UserService {
     private final UserDao userDao;
     private final UserDetailDao userDetailDao;
     private final LoginTicketDao loginTicketDao;
     private final HostHolder hostHolder;
-    private final PasswordTokenDao passwordTokenDao;
 
     @Autowired
-    public UserService(UserDao userDao, UserDetailDao userDetailDao, LoginTicketDao loginTicketDao, HostHolder hostHolder, PasswordTokenDao passwordTokenDao) {
+    public UserService(UserDao userDao, UserDetailDao userDetailDao, LoginTicketDao loginTicketDao, HostHolder hostHolder) {
         this.userDao = userDao;
         this.userDetailDao = userDetailDao;
         this.loginTicketDao = loginTicketDao;
         this.hostHolder = hostHolder;
-        this.passwordTokenDao = passwordTokenDao;
     }
 
     public User findByUserAccount(String account) {
         return userDao.findByAccount(account);
+    }
+
+    public boolean changeStatus(String ticket) {
+        LoginTicket findTicket = loginTicketDao.findByTicket(ticket);
+        findTicket.setStatus(1);
+        loginTicketDao.save(findTicket);
+        return true;
     }
 
     public Boolean addUser(User user) {
@@ -70,49 +77,6 @@ public class UserService {
      */
     public UserDetail getUserDetail(Long sid) {
         return userDetailDao.findBySid(sid);
-    }
-
-    public boolean changeStatus(String ticket) {
-        LoginTicket findTicket = loginTicketDao.findByTicket(ticket);
-        findTicket.setStatus(1);
-        loginTicketDao.save(findTicket);
-        return true;
-    }
-
-    public String findEmailByUserId(Long userId) {
-        UserDetail userDetail = userDetailDao.findBySid(userId);
-        if (Objects.isNull(userDetail.getEmail())) {
-            return null;
-        } else {
-            return userDetail.getEmail();
-        }
-    }
-
-    public boolean addPasswordToken(PasswordToken token) {
-        PasswordToken save = passwordTokenDao.save(token);
-        return !Objects.isNull(save);
-    }
-
-    public boolean initPassword(String account) {
-        User user = userDao.findByAccount(account);
-        user.setPassword("00000000");
-        User save = userDao.save(user);
-        return !Objects.isNull(save);
-    }
-
-    public PasswordToken findPasswordToken(Long token) {
-        PasswordToken passwordToken = passwordTokenDao.findByToken(token);
-        // 代表token已经使用过
-        passwordToken.setStatus(1);
-        passwordTokenDao.save(passwordToken);
-        return passwordToken;
-    }
-
-    public boolean changePassword(String newPassword) {
-        User user = hostHolder.getUser();
-        user.setPassword(newPassword);
-        User save = userDao.save(user);
-        return !Objects.isNull(save);
     }
 
     public String addTicket(Long userId) {
