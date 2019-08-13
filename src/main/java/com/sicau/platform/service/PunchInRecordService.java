@@ -55,6 +55,6 @@ public class PunchInRecordService {
     public boolean isPunchIn() {
         Long userId = hostHolder.getUser().getUserid();
         Integer allByUserId = punchInRecordDao.findTodayPunchInRecord(userId);
-        return Objects.nonNull(allByUserId);
+        return allByUserId.equals(1);
     }
 }
