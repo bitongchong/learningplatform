@@ -40,5 +40,4 @@ public class AdminService {
         userDao.save(adminUser);
         return true;
     }
-
 }

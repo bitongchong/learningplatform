@@ -34,8 +34,10 @@ public class FileController {
                              @RequestParam("fileType") Integer fileType) throws Exception {
         String path = request.getSession().getServletContext().getRealPath("upload");
         Long fileId = fileService.uploadFile(file, path, fileType);
+        // TODO 字符串拼接，资源消耗大，不优雅
+        String url = "/file/download?fileId=" + fileId;
         if (findFile(fileId)) {
-            return new Result(true, StatusCode.OK, "文件上传成功", fileId);
+            return new Result(true, StatusCode.OK, "文件上传成功", url);
         } else {
             return new Result(false, StatusCode.UPDATEERROR, "文件校验失败");
         }
