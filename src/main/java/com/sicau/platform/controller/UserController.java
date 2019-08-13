@@ -1,6 +1,7 @@
 package com.sicau.platform.controller;
 
 import com.sicau.platform.entity.*;
+import com.sicau.platform.service.PunchInRecordService;
 import com.sicau.platform.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,8 @@ public class UserController {
     UserService userService;
     @Autowired
     HostHolder hostHolder;
+    @Autowired
+    PunchInRecordService punchInRecordService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -84,5 +87,11 @@ public class UserController {
         } else {
             return new Result(false, StatusCode.GETINFOEERROR, "你还未设置详细信息");
         }
+    }
+
+    @GetMapping("/punchInStatus")
+    public Result getPunchInStatus() {
+        return punchInRecordService.isPunchIn() ? new Result(true, StatusCode.OK, "本日打卡完成")
+                : new Result(false, StatusCode.MISSION_NOT_COMPLETED, "未打卡，本日任务未完成");
     }
 }

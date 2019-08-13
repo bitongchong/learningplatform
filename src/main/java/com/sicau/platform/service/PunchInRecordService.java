@@ -25,6 +25,10 @@ public class PunchInRecordService {
     @Value("${punch_in_number}")
     Integer punchInNumber;
 
+    /**
+     * 判断是否能够打卡
+     * @return
+     */
     public boolean canPunchIn() {
         Long userId = hostHolder.getUser().getUserid();
         if (!isPunchIn()){
@@ -34,15 +38,23 @@ public class PunchInRecordService {
         return false;
     }
 
+    /**
+     * 打卡接口
+     * @return
+     */
     public boolean punchIn() {
         PunchInRecord punchInRecord = PunchInRecord.builder().punchInTime(new Date()).status(1).userId(hostHolder.getUser()
                 .getUserid()).build();
         return Objects.nonNull(punchInRecordDao.save(punchInRecord));
     }
 
-    private boolean isPunchIn() {
+    /**
+     * 今日是否打卡
+     * @return
+     */
+    public boolean isPunchIn() {
         Long userId = hostHolder.getUser().getUserid();
-        Integer allByUserId = punchInRecordDao.findAllByUserId(userId);
+        Integer allByUserId = punchInRecordDao.findTodayPunchInRecord(userId);
         return Objects.nonNull(allByUserId);
     }
 }
