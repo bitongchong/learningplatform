@@ -16,4 +16,6 @@ public interface PunchInRecordDao extends JpaSpecificationExecutor<PunchInRecord
      */
     @Query(value = "SELECT count(*) FROM study_record WHERE status=1 AND DATEDIFF(accomplish_time,NOW())=0 AND userid = ?1", nativeQuery = true)
     public Integer findReadedAritcleNumber(Long userId);
+
+    public Integer findAllByUserId(Long userId);
 }

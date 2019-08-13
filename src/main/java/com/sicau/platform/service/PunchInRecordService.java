@@ -27,13 +27,22 @@ public class PunchInRecordService {
 
     public boolean canPunchIn() {
         Long userId = hostHolder.getUser().getUserid();
-        Integer readedAritcleNumber = punchInRecordDao.findReadedAritcleNumber(userId);
-        return readedAritcleNumber >= punchInNumber;
+        if (!isPunchIn()){
+            Integer readedAritcleNumber = punchInRecordDao.findReadedAritcleNumber(userId);
+            return readedAritcleNumber >= punchInNumber;
+        }
+        return false;
     }
 
     public boolean punchIn() {
         PunchInRecord punchInRecord = PunchInRecord.builder().punchInTime(new Date()).status(1).userId(hostHolder.getUser()
                 .getUserid()).build();
         return Objects.nonNull(punchInRecordDao.save(punchInRecord));
+    }
+
+    private boolean isPunchIn() {
+        Long userId = hostHolder.getUser().getUserid();
+        Integer allByUserId = punchInRecordDao.findAllByUserId(userId);
+        return Objects.nonNull(allByUserId);
     }
 }
