@@ -21,7 +21,7 @@ public class FeedbackService {
     @Autowired
     FeedbackDao feedbackDao;
 
-    public boolean initiatFeedback(Feedback feedback) {
+    public boolean initialFeedback(Feedback feedback) {
         feedback.setCreateTime(new Date());
         Feedback saveResult = feedbackDao.save(feedback);
         return Objects.nonNull(saveResult);
