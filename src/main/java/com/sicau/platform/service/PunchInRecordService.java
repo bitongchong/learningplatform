@@ -1,10 +1,16 @@
 package com.sicau.platform.service;
 
+import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.PunchInRecordDao;
+import com.sicau.platform.entity.Admin;
 import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.PunchInRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -21,6 +27,8 @@ public class PunchInRecordService {
     HostHolder hostHolder;
     @Autowired
     PunchInRecordDao punchInRecordDao;
+    @Autowired
+    AdminDao adminDao;
     @Value("${punch_in_number}")
     Integer punchInNumber;
 
@@ -58,5 +66,21 @@ public class PunchInRecordService {
         Long userId = hostHolder.getUser().getUserid();
         Integer allByUserId = punchInRecordDao.findTodayPunchInRecord(userId);
         return allByUserId.equals(1);
+    }
+
+    public Page<PunchInRecord> getPunchInRecord(int size, int page) {
+        page -= 1;
+        Sort sort = new Sort(Sort.Direction.DESC, "punchInTime");
+        Long userId = hostHolder.getUser().getUserid();
+        Admin byAdminId = adminDao.getByAdminId(userId);
+        if (byAdminId != null) {
+            PageRequest of = PageRequest.of(page, size, sort);
+            return punchInRecordDao.findAll(of);
+        } else {
+            PageRequest pageRequest = PageRequest.of(page, size, sort);
+            Specification<PunchInRecord> specification = (Specification<PunchInRecord>) (root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("userId").as(Long.class), userId);
+            return punchInRecordDao.findAll(specification, pageRequest);
+        }
     }
 }
