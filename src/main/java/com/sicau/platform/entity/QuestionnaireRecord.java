@@ -28,4 +28,5 @@ public class QuestionnaireRecord {
     private Date finishTime;
     private String questionnaireTitle;
     private Long userId;
+    private Integer status;
 }

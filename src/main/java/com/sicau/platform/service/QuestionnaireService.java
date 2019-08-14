@@ -27,7 +27,7 @@ public class QuestionnaireService {
     @Autowired
     HostHolder hostHolder;
     @Autowired
-    QuestionnaireRecordDao quetionnaireRecordDao;
+    QuestionnaireRecordDao questionnaireRecordDao;
     @Autowired
     AdminDao adminDao;
 
@@ -55,8 +55,9 @@ public class QuestionnaireService {
         }
         String questionnaireTitle = questionnaireDaoById.get().getTitle();
         QuestionnaireRecord questionnaireRecord = QuestionnaireRecord.builder().finishTime(new Date()).recordId(IdGenerator.nextId())
-                .resultImgUrl(resultImgUrl).questionnaireTitle(questionnaireTitle).userId(hostHolder.getUser().getUserid()).build();
-        quetionnaireRecordDao.save(questionnaireRecord);
+                .resultImgUrl(resultImgUrl).questionnaireTitle(questionnaireTitle).userId(hostHolder.getUser().getUserid()).status(0)
+                .build();
+        questionnaireRecordDao.save(questionnaireRecord);
         return true;
     }
 
@@ -69,12 +70,23 @@ public class QuestionnaireService {
         Admin byAdminId = adminDao.getByAdminId(userId);
         if (byAdminId != null) {
             PageRequest of = PageRequest.of(page, size, sort);
-            return quetionnaireRecordDao.findAll(of);
+            return questionnaireRecordDao.findAll(of);
         } else {
             PageRequest pageRequest = PageRequest.of(page, size, sort);
             Specification<QuestionnaireRecord> specification = (Specification<QuestionnaireRecord>) (root, query, criteriaBuilder) ->
                     criteriaBuilder.equal(root.get("userId").as(Long.class), userId);
-            return quetionnaireRecordDao.findAll(specification, pageRequest);
+            return questionnaireRecordDao.findAll(specification, pageRequest);
         }
+    }
+
+    public boolean changeTheStatus(Long questionnaireRecordId) {
+        Optional<QuestionnaireRecord> byId = questionnaireRecordDao.findById(questionnaireRecordId);
+        if (byId.isPresent()) {
+            QuestionnaireRecord questionnaireRecord = byId.get();
+            questionnaireRecord.setStatus(1);
+            questionnaireRecordDao.save(questionnaireRecord);
+            return true;
+        }
+        return false;
     }
 }

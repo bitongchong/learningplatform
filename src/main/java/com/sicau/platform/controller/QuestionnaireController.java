@@ -41,4 +41,9 @@ public class QuestionnaireController {
                 new PageResult<QuestionnaireRecord>(allQuestionnaireRecordsByPage.getTotalElements(), allQuestionnaireRecordsByPage.getContent()));
     }
 
+    @GetMapping("/passTheRecord")
+    public Result passTheRecord(Long questionnaireRecord) {
+        return questionnaireService.changeTheStatus(questionnaireRecord) ? new Result(true, StatusCode.OK, "审核成功")
+                : new Result(false, StatusCode.INTERNALSERVERERROR, "审核失败，请联系管理员");
+    }
 }
