@@ -5,6 +5,7 @@ import com.sicau.platform.dao.PunchInRecordDao;
 import com.sicau.platform.entity.Admin;
 import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.PunchInRecord;
+import com.sicau.platform.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -52,8 +53,9 @@ public class PunchInRecordService {
      * @return
      */
     public boolean punchIn() {
-        PunchInRecord punchInRecord = PunchInRecord.builder().punchInTime(new Date()).status(1).userId(hostHolder.getUser()
-                .getUserid()).build();
+        User user = hostHolder.getUser();
+        PunchInRecord punchInRecord = PunchInRecord.builder().punchInTime(new Date()).status(1).userId(user
+                .getUserid()).userName(user.getAccount()).build();
         return Objects.nonNull(punchInRecordDao.save(punchInRecord));
     }
 

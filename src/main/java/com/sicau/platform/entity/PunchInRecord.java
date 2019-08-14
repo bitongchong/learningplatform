@@ -28,4 +28,5 @@ public class PunchInRecord {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date punchInTime;
     private Integer status;
+    private String userName;
 }

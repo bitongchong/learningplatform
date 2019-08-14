@@ -64,7 +64,6 @@ public class StudyRecordService {
             return new Result(false, StatusCode.ARTICLREADEDED, "本篇文章已经学习过了");
         }
         studyRecord.setStatus(RecordStatus.FINISH);
-        // todo 改成配置文件修改，这儿设置为3秒进行测试
         if (now.getTime() - studyRecord.getOpenTime().getTime() <  timeNeedToRead * ONE_MINITE) {
             return new Result(false, StatusCode.ARTICLRUNFINISH, "阅读时间不够");
         }
