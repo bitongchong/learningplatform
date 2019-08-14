@@ -41,8 +41,8 @@ public class PunchInRecordService {
     public boolean canPunchIn() {
         Long userId = hostHolder.getUser().getUserid();
         if (!isPunchIn()) {
-            Integer readedAritcleNumber = punchInRecordDao.findReadedAritcleNumber(userId);
-            return readedAritcleNumber >= punchInNumber;
+            Integer readAritcleNumber = punchInRecordDao.findReadAritcleNumber(userId);
+            return readAritcleNumber >= punchInNumber;
         }
         return false;
     }
@@ -56,7 +56,8 @@ public class PunchInRecordService {
         User user = hostHolder.getUser();
         PunchInRecord punchInRecord = PunchInRecord.builder().punchInTime(new Date()).status(1).userId(user
                 .getUserid()).userName(user.getAccount()).build();
-        return Objects.nonNull(punchInRecordDao.save(punchInRecord));
+        punchInRecordDao.save(punchInRecord);
+        return true;
     }
 
     /**
