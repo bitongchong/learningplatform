@@ -1,6 +1,5 @@
 package com.sicau.platform.configuration;
 
-import com.sicau.platform.interceptor.CrossDomainInterceptor;
 import com.sicau.platform.interceptor.LoginRequiredInterceptor;
 import com.sicau.platform.interceptor.PassportInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,10 @@ public class PlatformWebConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(passportInterceptor);
-        registry.addInterceptor(loginRequiredInterceptor).excludePathPatterns("/login").
-                excludePathPatterns("/article/**").excludePathPatterns("/regist").excludePathPatterns("/admin/login").
-                excludePathPatterns("/admin/regist").excludePathPatterns("/file/download").excludePathPatterns("/file/**");
+        registry.addInterceptor(loginRequiredInterceptor).excludePathPatterns("/login")
+                .excludePathPatterns("/article/**").excludePathPatterns("/regist").excludePathPatterns("/admin/login")
+                .excludePathPatterns("/admin/regist").excludePathPatterns("/file/download").excludePathPatterns("/file/**")
+                .excludePathPatterns("/findPassword/*").excludePathPatterns("/forget");
 /*
 跨域问题拦截器：
 registry.addInterceptor(crossDomainInterceptor);
@@ -38,7 +38,7 @@ registry.addInterceptor(crossDomainInterceptor);
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/file/update/**").addResourceLocations("file:C://file/update/");
+        // registry.addResourceHandler("/file/update/**").addResourceLocations("file:C://file/update/");
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 }

@@ -5,6 +5,7 @@ import com.sicau.platform.entity.PageResult;
 import com.sicau.platform.entity.Result;
 import com.sicau.platform.entity.StatusCode;
 import com.sicau.platform.service.FileService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 /**
  * @author boot liu
@@ -62,7 +64,11 @@ public class FileController {
 
     @RequestMapping("/file/download")
     public Result downloadFile(HttpServletResponse response, @RequestParam("fileId") Long fileId) {
-        String filePathName = fileService.getFileById(fileId).getFileUrl();
+        FileEntity fileEntity = fileService.getFileById(fileId);
+        if (ObjectUtils.isEmpty(fileEntity)) {
+            return new Result(false, StatusCode.RESOURCEERROR, "文件不存在");
+        }
+        String filePathName = fileEntity.getFileUrl();
         File file = new File(filePathName);
         if (!file.exists()) {
             return new Result(false, StatusCode.RESOURCEERROR, "文件不存在");

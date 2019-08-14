@@ -51,18 +51,17 @@ public class PasswordService {
         return !Objects.isNull(save);
     }
 
-    public boolean initPassword(String account) {
+    public boolean initPassword(String account, PasswordToken passwordToken) {
         User user = userDao.findByAccount(account);
         user.setPassword("00000000");
         User save = userDao.save(user);
+        passwordToken.setStatus(1);
+        passwordTokenDao.save(passwordToken);
         return !Objects.isNull(save);
     }
 
     public PasswordToken findPasswordToken(Long token) {
         PasswordToken passwordToken = passwordTokenDao.findByToken(token);
-        // 代表token已经使用过
-        passwordToken.setStatus(1);
-        passwordTokenDao.save(passwordToken);
         return passwordToken;
     }
 

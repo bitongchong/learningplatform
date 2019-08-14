@@ -33,7 +33,7 @@ public class PasswordController {
 
     @PostMapping("/forget")
     public Result findPassword(String account) throws EmailSendFailException {
-        Long userId = hostHolder.getUser().getUserid();
+        Long userId = userService.findByUserAccount(account).getUserid();
         String email = passwordService.findEmailByUserId(userId);
         if (Objects.isNull(email)) {
             return new Result(false, StatusCode.EMAILUNKNOWN, "未完善邮箱信息，请联系管理员进行密码找回");
@@ -43,18 +43,18 @@ public class PasswordController {
     }
 
     @GetMapping("/findPassword/{token}")
-    public Result findPassword(@PathVariable("token") Long token) {
+    public String findPassword(@PathVariable("token") Long token) {
         PasswordToken passwordToken = passwordService.findPasswordToken(token);
         if (passwordToken != null) {
             Date expired = passwordToken.getExpired();
             if (passwordToken.getStatus() != 0 || new Date().after(expired)) {
-                return new Result(false, StatusCode.TOKENEXPIRED, "token无效或已使用");
+                return "token无效或已使用";
             }
-            boolean initPasswordResult = passwordService.initPassword(passwordToken.getAccount());
-            return initPasswordResult ? new Result(true, StatusCode.OK, "密码已初始化为00000000，登录后请及时更新") :
-                    new Result(false, StatusCode.INTERNALSERVERERROR, "服务端错误");
+            boolean initPasswordResult = passwordService.initPassword(passwordToken.getAccount(), passwordToken);
+            return initPasswordResult ? "密码已初始化为00000000，登录后请及时更新" :
+                    "服务端错误";
         }
-        return new Result(false, StatusCode.TOKENEXPIRED, "token无效");
+        return "token无效";
     }
 
     @PostMapping("/changePassword")

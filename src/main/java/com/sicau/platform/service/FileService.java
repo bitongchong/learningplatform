@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * @author boot liu
@@ -48,7 +49,12 @@ public class FileService {
 /*        if (fileDao.findById(fileId).isPresent()) {
             throw new RuntimeException("文件获取失败");
         }*/
-        fileEntity = fileDao.findById(fileId).get();
+        Optional<FileEntity> optionalFileEntity = fileDao.findById(fileId);
+        boolean result = fileDao.findById(fileId).isPresent();
+        if (!result) {
+            return null;
+        }
+        fileEntity = optionalFileEntity.get();
         return fileEntity;
     }
 
