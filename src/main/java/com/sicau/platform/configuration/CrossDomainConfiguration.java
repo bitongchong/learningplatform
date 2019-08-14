@@ -1,17 +1,13 @@
 package com.sicau.platform.configuration;
 
-/**
- * @author liuyuehe
- * @description 跨域请求
- * @date 2019/8/14
- */
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * @author liuyuehe
+ * @description 跨域请求支持
+ * @date 2019/8/14
  */
 @Configuration
 public class CrossDomainConfiguration implements WebMvcConfigurer {
