@@ -64,7 +64,7 @@ public class QuestionnaireService {
 
     public Page<QuestionnaireRecord> getAllQuestionnaireRecordsByPage(int size, int page) {
         page -= 1;
-        Sort sort = new Sort(Sort.Direction.DESC, "finish_time");
+        Sort sort = new Sort(Sort.Direction.DESC, "finishTime");
         // todo 多处使用到管理员权限验证，考虑独立成拦截器或者上权限框架
         Long userId = hostHolder.getUser().getUserid();
         Admin byAdminId = adminDao.getByAdminId(userId);
