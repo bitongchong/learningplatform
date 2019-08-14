@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
+/**
+ * @author boot liu
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,5 +23,5 @@ public class QuestionnaireRecord {
     private Long qid;
     private Integer score;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date testtime;
+    private Date testTime;
 }
