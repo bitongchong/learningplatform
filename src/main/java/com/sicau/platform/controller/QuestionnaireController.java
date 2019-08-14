@@ -11,12 +11,11 @@ public class QuestionnaireController {
     @Autowired
     QuestionnaireService questionnaireService;
 
-
     @PostMapping("/addQuestionnaire")
-    public Result addQuestionnaire(Questionnaire questionnaire) {
-        questionnaireService.addQuestionnaire(questionnaire);
+    public Result addQuestionnaire(@PathVariable("url") String url,
+                                   @PathVariable("title") String title) {
+        questionnaireService.addQuestionnaire(url, title);
         return new Result(true, StatusCode.OK, "问卷信息添加成功");
-
     }
 
     @GetMapping("/questionnaire/{size}/{page}")

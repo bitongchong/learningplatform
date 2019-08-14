@@ -2,20 +2,18 @@ package com.sicau.platform.service;
 
 import com.sicau.platform.dao.QuertionnaireRecordDao;
 import com.sicau.platform.dao.QuestionnaireDao;
-import com.sicau.platform.entity.*;
+import com.sicau.platform.entity.HostHolder;
+import com.sicau.platform.entity.Questionnaire;
+import com.sicau.platform.entity.QuestionnaireRecord;
+import com.sicau.platform.entity.User;
 import com.sicau.platform.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import java.util.Date;
 
 @Service
 public class QuestionnaireService {
@@ -24,21 +22,17 @@ public class QuestionnaireService {
     @Autowired
     HostHolder hostHolder;
     @Autowired
-    IdGenerator idGenerator;
-    @Autowired
     QuertionnaireRecordDao quertionnaireRecordDao;
-    public boolean addQuestionnaire(Questionnaire questionnaire){
-        User user = hostHolder.getUser();
-        questionnaire.setUserid(user.getUserid());
-        questionnaire.setQid(idGenerator.nextId());
 
+    public boolean addQuestionnaire(String url, String title) {
+        Questionnaire questionnaire = Questionnaire.builder().qid(IdGenerator.nextId()).title(title)
+                .updatetime(new Date()).url(url).userid(hostHolder.getUser()
+                        .getUserid()).build();
         questionnaireDao.save(questionnaire);
-
-        return  true;
-
+        return true;
     }
 
-    public Page<Questionnaire> getAllQuestionnaireByPage(int size,int page){
+    public Page<Questionnaire> getAllQuestionnaireByPage(int size, int page) {
         page -= 1;
         Sort sort = new Sort(Sort.Direction.DESC, "updatetime");
         PageRequest of = PageRequest.of(page, size, sort);
@@ -47,14 +41,14 @@ public class QuestionnaireService {
     }
 
 
-    public boolean addQuertionnaireRecords(QuestionnaireRecord questionnaireRecord){
+    public boolean addQuertionnaireRecords(QuestionnaireRecord questionnaireRecord) {
 
         quertionnaireRecordDao.save(questionnaireRecord);
         return true;
     }
 
 
-    public Page<QuestionnaireRecord> getAllQuestionnaireRecordsByPage(int size,int page){
+    public Page<QuestionnaireRecord> getAllQuestionnaireRecordsByPage(int size, int page) {
         page -= 1;
         Sort sort = new Sort(Sort.Direction.DESC, "testtime");
         PageRequest of = PageRequest.of(page, size, sort);
