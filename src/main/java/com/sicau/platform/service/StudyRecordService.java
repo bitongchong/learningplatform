@@ -68,6 +68,7 @@ public class StudyRecordService {
             return new Result(false, StatusCode.ARTICLRUNFINISH, "阅读时间不够");
         }
         studyRecord.setAccomplishTime(now);
+        studyRecord.setUserName(hostHolder.getUser().getAccount());
         studyRecordDao.save(studyRecord);
         if (punchInRecordService.canPunchIn()) {
             boolean punchInResult = punchInRecordService.punchIn();

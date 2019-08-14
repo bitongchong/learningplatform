@@ -3,10 +3,7 @@ package com.sicau.platform.service;
 import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.QuestionnaireDao;
 import com.sicau.platform.dao.QuestionnaireRecordDao;
-import com.sicau.platform.entity.Admin;
-import com.sicau.platform.entity.HostHolder;
-import com.sicau.platform.entity.Questionnaire;
-import com.sicau.platform.entity.QuestionnaireRecord;
+import com.sicau.platform.entity.*;
 import com.sicau.platform.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,9 +51,10 @@ public class QuestionnaireService {
             return false;
         }
         String questionnaireTitle = questionnaireDaoById.get().getTitle();
+        User user = hostHolder.getUser();
         QuestionnaireRecord questionnaireRecord = QuestionnaireRecord.builder().finishTime(new Date()).recordId(IdGenerator.nextId())
-                .resultImgUrl(resultImgUrl).questionnaireTitle(questionnaireTitle).userId(hostHolder.getUser().getUserid()).status(0)
-                .build();
+                .resultImgUrl(resultImgUrl).questionnaireTitle(questionnaireTitle).userId(user.getUserid()).status(0)
+                .userName(user.getAccount()).build();
         questionnaireRecordDao.save(questionnaireRecord);
         return true;
     }
