@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -59,6 +60,9 @@ public class FileService {
     }
 
     public Long uploadFile(MultipartFile file, String path, Integer fileType) throws Exception {
+        if (Objects.isNull(file)) {
+            return  null;
+        }
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileType(fileType);
         fileEntity.setCreateDate(new Date());

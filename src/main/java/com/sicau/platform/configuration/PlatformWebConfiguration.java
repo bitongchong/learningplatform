@@ -38,7 +38,6 @@ registry.addInterceptor(crossDomainInterceptor);
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // registry.addResourceHandler("/file/update/**").addResourceLocations("file:C://file/update/");
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 }

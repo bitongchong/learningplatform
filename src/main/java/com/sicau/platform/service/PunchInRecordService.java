@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -27,11 +26,12 @@ public class PunchInRecordService {
 
     /**
      * 判断是否能够打卡
+     *
      * @return
      */
     public boolean canPunchIn() {
         Long userId = hostHolder.getUser().getUserid();
-        if (!isPunchIn()){
+        if (!isPunchIn()) {
             Integer readedAritcleNumber = punchInRecordDao.findReadedAritcleNumber(userId);
             return readedAritcleNumber >= punchInNumber;
         }
@@ -40,6 +40,7 @@ public class PunchInRecordService {
 
     /**
      * 打卡接口
+     *
      * @return
      */
     public boolean punchIn() {
@@ -50,6 +51,7 @@ public class PunchInRecordService {
 
     /**
      * 今日是否打卡
+     *
      * @return
      */
     public boolean isPunchIn() {
