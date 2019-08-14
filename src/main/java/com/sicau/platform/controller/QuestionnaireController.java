@@ -42,8 +42,8 @@ public class QuestionnaireController {
     }
 
     @GetMapping("/passTheRecord")
-    public Result passTheRecord(Long questionnaireRecord) {
-        return questionnaireService.changeTheStatus(questionnaireRecord) ? new Result(true, StatusCode.OK, "审核成功")
+    public Result passTheRecord(Long questionnaireRecordId) {
+        return questionnaireService.changeTheStatus(questionnaireRecordId) ? new Result(true, StatusCode.OK, "审核成功")
                 : new Result(false, StatusCode.INTERNALSERVERERROR, "审核失败，请联系管理员");
     }
 }
