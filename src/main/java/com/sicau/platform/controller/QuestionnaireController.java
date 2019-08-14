@@ -12,8 +12,8 @@ public class QuestionnaireController {
     QuestionnaireService questionnaireService;
 
     @PostMapping("/addQuestionnaire")
-    public Result addQuestionnaire(@PathVariable("url") String url,
-                                   @PathVariable("title") String title) {
+    public Result addQuestionnaire( String url,
+                                   String title) {
         questionnaireService.addQuestionnaire(url, title);
         return new Result(true, StatusCode.OK, "问卷信息添加成功");
     }
