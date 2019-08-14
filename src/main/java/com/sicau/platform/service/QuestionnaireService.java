@@ -1,28 +1,35 @@
 package com.sicau.platform.service;
 
-import com.sicau.platform.dao.QuertionnaireRecordDao;
+import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.QuestionnaireDao;
+import com.sicau.platform.dao.QuestionnaireRecordDao;
+import com.sicau.platform.entity.Admin;
 import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.Questionnaire;
 import com.sicau.platform.entity.QuestionnaireRecord;
-import com.sicau.platform.entity.User;
 import com.sicau.platform.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class QuestionnaireService {
     @Autowired
     QuestionnaireDao questionnaireDao;
     @Autowired
+    QuestionnaireRecordDao questionnaireRecord;
+    @Autowired
     HostHolder hostHolder;
     @Autowired
-    QuertionnaireRecordDao quertionnaireRecordDao;
+    QuestionnaireRecordDao quetionnaireRecordDao;
+    @Autowired
+    AdminDao adminDao;
 
     public boolean addQuestionnaire(String url, String title) {
         Questionnaire questionnaire = Questionnaire.builder().qid(IdGenerator.nextId()).title(title)
@@ -41,18 +48,33 @@ public class QuestionnaireService {
     }
 
 
-    public boolean addQuertionnaireRecords(QuestionnaireRecord questionnaireRecord) {
-
-        quertionnaireRecordDao.save(questionnaireRecord);
+    public boolean addQuertionnaireRecords(String resultImgUrl, Long questionnaireId) {
+        Optional<Questionnaire> questionnaireDaoById = questionnaireDao.findById(questionnaireId);
+        if (!questionnaireDaoById.isPresent()) {
+            return false;
+        }
+        String questionnaireTitle = questionnaireDaoById.get().getTitle();
+        QuestionnaireRecord questionnaireRecord = QuestionnaireRecord.builder().finishTime(new Date()).recordId(IdGenerator.nextId())
+                .resultImgUrl(resultImgUrl).questionnaireTitle(questionnaireTitle).userId(hostHolder.getUser().getUserid()).build();
+        quetionnaireRecordDao.save(questionnaireRecord);
         return true;
     }
 
 
     public Page<QuestionnaireRecord> getAllQuestionnaireRecordsByPage(int size, int page) {
         page -= 1;
-        Sort sort = new Sort(Sort.Direction.DESC, "testtime");
-        PageRequest of = PageRequest.of(page, size, sort);
-
-        return quertionnaireRecordDao.findAll(of);
+        Sort sort = new Sort(Sort.Direction.DESC, "finish_time");
+        // todo 多处使用到管理员权限验证，考虑独立成拦截器或者上权限框架
+        Long userId = hostHolder.getUser().getUserid();
+        Admin byAdminId = adminDao.getByAdminId(userId);
+        if (byAdminId != null) {
+            PageRequest of = PageRequest.of(page, size, sort);
+            return quetionnaireRecordDao.findAll(of);
+        } else {
+            PageRequest pageRequest = PageRequest.of(page, size, sort);
+            Specification<QuestionnaireRecord> specification = (Specification<QuestionnaireRecord>) (root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("userId").as(Long.class), userId);
+            return quetionnaireRecordDao.findAll(specification, pageRequest);
+        }
     }
 }

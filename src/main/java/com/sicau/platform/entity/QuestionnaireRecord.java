@@ -2,6 +2,7 @@ package com.sicau.platform.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,11 +18,14 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "questionnaire_record")
 public class QuestionnaireRecord {
     @Id
-    private Long qid;
-    private Integer score;
+    private Long recordId;
+    private String resultImgUrl;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date testTime;
+    private Date finishTime;
+    private String questionnaireTitle;
+    private Long userId;
 }

@@ -26,12 +26,11 @@ public class QuestionnaireController {
         Page<Questionnaire> questionnairesByPage = questionnaireService.getAllQuestionnaireByPage(size, page);
         return new Result(true, StatusCode.OK, "查询成功",
                 new PageResult<Questionnaire>(questionnairesByPage.getTotalElements(), questionnairesByPage.getContent()));
-
     }
 
     @PostMapping("/addQuestionnaireRecords")
-    public Result addQuestionnaireRecords(@RequestBody QuestionnaireRecord questionnaireRecord) {
-        questionnaireService.addQuertionnaireRecords(questionnaireRecord);
+    public Result addQuestionnaireRecords(String resultImgUrl, Long questionnaireId) {
+        questionnaireService.addQuertionnaireRecords(resultImgUrl, questionnaireId);
         return new Result(true, StatusCode.OK, "问卷结果添加成功");
     }
 
