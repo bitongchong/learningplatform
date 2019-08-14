@@ -8,6 +8,7 @@ import com.sicau.platform.entity.LoginTicket;
 import com.sicau.platform.entity.User;
 import com.sicau.platform.entity.UserDetail;
 import com.sicau.platform.util.IdGenerator;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

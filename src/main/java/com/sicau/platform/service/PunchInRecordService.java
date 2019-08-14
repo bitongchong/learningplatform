@@ -2,10 +2,9 @@ package com.sicau.platform.service;
 
 import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.PunchInRecordDao;
-import com.sicau.platform.entity.Admin;
-import com.sicau.platform.entity.HostHolder;
-import com.sicau.platform.entity.PunchInRecord;
-import com.sicau.platform.entity.User;
+import com.sicau.platform.dao.UserDetailDao;
+import com.sicau.platform.entity.*;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -15,7 +14,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author liuyuehe
@@ -30,6 +28,8 @@ public class PunchInRecordService {
     PunchInRecordDao punchInRecordDao;
     @Autowired
     AdminDao adminDao;
+    @Autowired
+    UserDetailDao userDetailDao;
     @Value("${punch_in_number}")
     Integer punchInNumber;
 
@@ -52,12 +52,21 @@ public class PunchInRecordService {
      *
      * @return
      */
-    public boolean punchIn() {
+    boolean punchIn() {
         User user = hostHolder.getUser();
         PunchInRecord punchInRecord = PunchInRecord.builder().punchInTime(new Date()).status(1).userId(user
-                .getUserid()).userName(user.getAccount()).build();
+                .getUserid()).userName(getUserName(user.getUserid())).build();
         punchInRecordDao.save(punchInRecord);
         return true;
+    }
+
+    private String getUserName(Long sid) {
+        UserDetail userDetail = userDetailDao.findBySid(sid);
+        if (ObjectUtils.isNotEmpty(userDetail)) {
+            return userDetail.getName();
+        } else {
+            return null;
+        }
     }
 
     /**

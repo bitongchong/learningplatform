@@ -23,8 +23,8 @@ public class FeedbackService {
 
     public boolean initialFeedback(Feedback feedback) {
         feedback.setCreateTime(new Date());
-        Feedback saveResult = feedbackDao.save(feedback);
-        return Objects.nonNull(saveResult);
+        feedbackDao.save(feedback);
+        return true;
     }
 
     public Page<Feedback> showFeedback(int page, int size) {

@@ -1,8 +1,10 @@
 package com.sicau.platform.service;
 
 import com.sicau.platform.dao.StudyRecordDao;
+import com.sicau.platform.dao.UserDetailDao;
 import com.sicau.platform.entity.*;
 import com.sicau.platform.util.IdGenerator;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,8 @@ public class StudyRecordService {
     HostHolder hostHolder;
     @Autowired
     PunchInRecordService punchInRecordService;
+    @Autowired
+    UserDetailDao userDetailDao;
     @Value("${read_time}")
     Integer timeNeedToRead;
     private static final Integer ONE_MINITE = 60 * 1000;
@@ -68,7 +72,7 @@ public class StudyRecordService {
             return new Result(false, StatusCode.ARTICLRUNFINISH, "阅读时间不够");
         }
         studyRecord.setAccomplishTime(now);
-        studyRecord.setUserName(hostHolder.getUser().getAccount());
+        studyRecord.setUserName(getUserName(hostHolder.getUser().getUserid()));
         studyRecordDao.save(studyRecord);
         if (punchInRecordService.canPunchIn()) {
             boolean punchInResult = punchInRecordService.punchIn();
@@ -78,14 +82,21 @@ public class StudyRecordService {
         }
         return new Result(true, StatusCode.OK, "本篇文章学习完成");
     }
-
+    private String getUserName(Long sid) {
+        UserDetail userDetail = userDetailDao.findBySid(sid);
+        if (ObjectUtils.isNotEmpty(userDetail)) {
+            return userDetail.getName();
+        } else {
+            return null;
+        }
+    }
     public Page<StudyRecord> getStudyRecord(int size, int page) {
         Long userid = hostHolder.getUser().getUserid();
         page -= 1;
         Sort sort = new Sort(Sort.Direction.DESC, "accomplishTime");
         PageRequest pageRequest = PageRequest.of(page, size, sort);
         Specification<StudyRecord> specification = (Specification<StudyRecord>) (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("userid").as(Long.class), hostHolder.getUser().getUserid());
+                criteriaBuilder.equal(root.get("userid").as(Long.class), userid);
         return studyRecordDao.findAll(specification, pageRequest);
     }
 

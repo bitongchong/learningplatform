@@ -3,8 +3,10 @@ package com.sicau.platform.service;
 import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.QuestionnaireDao;
 import com.sicau.platform.dao.QuestionnaireRecordDao;
+import com.sicau.platform.dao.UserDetailDao;
 import com.sicau.platform.entity.*;
 import com.sicau.platform.util.IdGenerator;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +29,8 @@ public class QuestionnaireService {
     QuestionnaireRecordDao questionnaireRecordDao;
     @Autowired
     AdminDao adminDao;
+    @Autowired
+    UserDetailDao userDetailDao;
 
     public boolean addQuestionnaire(String url, String title) {
         Questionnaire questionnaire = Questionnaire.builder().qid(IdGenerator.nextId()).title(title)
@@ -54,7 +58,7 @@ public class QuestionnaireService {
         User user = hostHolder.getUser();
         QuestionnaireRecord questionnaireRecord = QuestionnaireRecord.builder().finishTime(new Date()).recordId(IdGenerator.nextId())
                 .resultImgUrl(resultImgUrl).questionnaireTitle(questionnaireTitle).userId(user.getUserid()).status(0)
-                .userName(user.getAccount()).build();
+                .userName(getUserName(user.getUserid())).build();
         questionnaireRecordDao.save(questionnaireRecord);
         return true;
     }
@@ -76,7 +80,14 @@ public class QuestionnaireService {
             return questionnaireRecordDao.findAll(specification, pageRequest);
         }
     }
-
+    private String getUserName(Long sid) {
+        UserDetail userDetail = userDetailDao.findBySid(sid);
+        if (ObjectUtils.isNotEmpty(userDetail)) {
+            return userDetail.getName();
+        } else {
+            return null;
+        }
+    }
     public boolean changeTheStatus(Long questionnaireRecordId) {
         Optional<QuestionnaireRecord> byId = questionnaireRecordDao.findById(questionnaireRecordId);
         if (byId.isPresent()) {
