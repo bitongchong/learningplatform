@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.Optional;
 
@@ -26,14 +27,16 @@ import java.util.Optional;
  * @date 2019/8/15
  */
 @Service
+@Transactional(rollbackOn = Exception.class)
 public class CollectionRecordService {
     @Autowired
     CollectionRecordDao collectionRecordDao;
     @Autowired
     HostHolder hostHolder;
 
-    public boolean getCollectionStatus(Long userId) {
-        CollectionRecord byUserId = collectionRecordDao.findByUserId(userId);
+    public boolean getCollectionStatus(Long articleId) {
+        Long userId = hostHolder.getUser().getUserid();
+        CollectionRecord byUserId = collectionRecordDao.findByUserIdAndArticleId(userId, articleId);
         return ObjectUtils.isEmpty(byUserId);
     }
 
