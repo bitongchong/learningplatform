@@ -30,7 +30,7 @@ public class CommentController {
     @GetMapping("/getComment")
     public Result getComment(Long articleId) {
         List<Comment> allComment = commentService.findAllComment(articleId);
-        return new Result(true, StatusCode.OK, "查询成功");
+        return new Result(true, StatusCode.OK, "查询成功", allComment);
     }
 
     @DeleteMapping("/deleteComment")
