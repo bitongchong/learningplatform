@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
  * @description
  * @date 2019/8/14
  */
+@Entity
 @Builder
 @Data
 @AllArgsConstructor
