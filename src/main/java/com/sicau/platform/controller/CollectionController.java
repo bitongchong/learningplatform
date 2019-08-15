@@ -41,8 +41,8 @@ public class CollectionController {
 
     @GetMapping("/getAllCollectionRecord/{page}/{size}")
     public Result getAllCollectionRecord(@PathVariable("page") int page, @PathVariable("size") int size) {
-        Page<CollectionRecord> allCollectionRecord = collectionRecordService.getAllCollectionRecord(size, page);
+        Page<CollectionRecord> allCollectionRecord = collectionRecordService.getAllCollectionRecord(page, size);
         return new Result(true, StatusCode.OK, "获取成功",
-                new PageResult<>(allCollectionRecord.getTotalElements(), allCollectionRecord.getContent()));
+                new PageResult<CollectionRecord>(allCollectionRecord.getTotalElements(), allCollectionRecord.getContent()));
     }
 }
