@@ -12,10 +12,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ArticleDao extends JpaRepository<Article, Long>, JpaSpecificationExecutor<Article> {
-    public Article findByArticleId(Long articleId);
-    public Article findByArticleIdAndAuthor(Long articleId, String author);
+    Article findByArticleId(Long articleId);
+    Article findByArticleIdAndAuthor(Long articleId, String author);
     @Query(value = "SELECT * FROM article WHERE TYPE = ?2 ORDER BY updatetime DESC LIMIT 0,?1", nativeQuery = true)
-    public List<Article> find(Integer size, Integer type);
+    List<Article> find(Integer size, Integer type);
 //    @Delete(value = "DELETE FROM article where article_id = ?")
-    public int deleteArticleByArticleId(Long articleId);
+    int deleteArticleByArticleId(Long articleId);
 }

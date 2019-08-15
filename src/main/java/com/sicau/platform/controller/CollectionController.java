@@ -21,7 +21,9 @@ public class CollectionController {
 
     @PostMapping("/addCollection")
     public Result addCollection(CollectionRecord collectionRecord) {
-        collectionRecordService.addCollectionRecord(collectionRecord);
+        if (!collectionRecordService.addCollectionRecord(collectionRecord)) {
+            return new Result(false, StatusCode.COLLECTION_STATUS_ERROR, "您已收藏过该文章");
+        }
         return new Result(true, StatusCode.OK, "收藏成功");
     }
 
@@ -34,7 +36,7 @@ public class CollectionController {
     @DeleteMapping("/cancelCollection")
     public Result cancelCollection(Long articleId) {
         collectionRecordService.cancelCollection(articleId);
-        return new Result(true, StatusCode.OK, "删除成功");
+        return new Result(true, StatusCode.OK, "取消收藏成功");
     }
 
     @GetMapping("/getAllCollectionRecord/{page}/{size}")

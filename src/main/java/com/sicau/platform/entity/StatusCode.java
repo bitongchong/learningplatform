@@ -41,6 +41,8 @@ public class StatusCode {
     public static final int PASSWORDERRO = 400015;
     // 未打卡，本日任务未完成
     public static final int MISSION_NOT_COMPLETED = 400016;
+    // 重复收藏同一篇文章
+    public static final int COLLECTION_STATUS_ERROR = 400017;
     //服务器内部错误（做为全局异常的状态码返回）
     public static final int INTERNALSERVERERROR = 50001;
 }

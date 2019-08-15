@@ -37,13 +37,16 @@ public class CollectionRecordService {
     public boolean getCollectionStatus(Long articleId) {
         Long userId = hostHolder.getUser().getUserid();
         CollectionRecord byUserId = collectionRecordDao.findByUserIdAndArticleId(userId, articleId);
-        return ObjectUtils.isEmpty(byUserId);
+        return ObjectUtils.isNotEmpty(byUserId);
     }
 
     public boolean addCollectionRecord(CollectionRecord collectionRecord) {
         collectionRecord.setCollectionId(IdGenerator.nextId());
         collectionRecord.setCreateTime(new Date());
         collectionRecord.setUserId(hostHolder.getUser().getUserid());
+        if (getCollectionStatus(collectionRecord.getArticleId())) {
+            return false;
+        }
         collectionRecordDao.save(collectionRecord);
         // 当然不能直接返回
         return true;
@@ -64,6 +67,6 @@ public class CollectionRecordService {
     }
 
     public void cancelCollection(Long articleId) {
-        collectionRecordDao.deleteByArticleIdAndUserId(articleId, hostHolder.getUser().getUserid());
+        collectionRecordDao.deleteCollectionRecordByArticleIdAndUserId(articleId, hostHolder.getUser().getUserid());
     }
 }
