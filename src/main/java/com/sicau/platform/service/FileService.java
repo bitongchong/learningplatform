@@ -23,7 +23,7 @@ import java.util.Optional;
  * @author boot liu
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class FileService {
 
     private final FileDao fileDao;
