@@ -5,9 +5,11 @@ import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.Like;
 import com.sicau.platform.util.IdGenerator;
 import org.apache.commons.lang3.ObjectUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.Optional;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
  * @date 2019/8/15
  */
 @Service
+@Transactional(rollbackOn = Exception.class)
 public class LikeService {
     @Autowired
     HostHolder hostHolder;
@@ -27,6 +30,10 @@ public class LikeService {
         like.setCreateTime(new Date());
         like.setLikeId(IdGenerator.nextId());
         like.setUserId(hostHolder.getUser().getUserid());
+        boolean likeStatus = getLikeStatus(like.getArticleId());
+        if (likeStatus) {
+            return false;
+        }
         Like save = likeDao.save(like);
         return ObjectUtils.isNotEmpty(save);
     }
@@ -37,8 +44,8 @@ public class LikeService {
     }
 
     public boolean getLikeStatus(Long articleId) {
-        Optional<Like> id = likeDao.findById(articleId);
-        return id.isPresent();
+        Like like = likeDao.findLikeByArticleIdAndUserId(articleId, hostHolder.getUser().getUserid());
+        return ObjectUtils.isNotEmpty(like);
     }
 
     public Integer getArticleLikeCount(Long articleId) {

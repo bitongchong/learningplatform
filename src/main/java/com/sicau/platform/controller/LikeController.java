@@ -24,7 +24,7 @@ public class LikeController {
     public Result addLike(Like like) {
         boolean b = likeService.addLike(like);
         return b ? new Result(true, StatusCode.OK, "点赞成功")
-                : new Result(false, StatusCode.INTERNALSERVERERROR, "点赞失败");
+                : new Result(false, StatusCode.REPEATE_LIKE, "您已点过赞");
     }
 
     @GetMapping("/getLikeStatus")
