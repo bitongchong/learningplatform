@@ -35,11 +35,12 @@ public class CommentController {
 
     @DeleteMapping("/deleteComment")
     public Result deleteComment(Long commentId) {
-        commentService.deleteComment(commentId);
-        return new Result(true, StatusCode.OK, "删除成功");
+        boolean result = commentService.deleteComment(commentId);
+        return result ? new Result(true, StatusCode.OK, "删除成功")
+                : new Result(false, StatusCode.ACCESSERROR, "无权删除该评论");
     }
 
-    @GetMapping("/showAllComment/{size}/{page}")
+    @GetMapping("/getAllComment/{size}/{page}")
     public Result showAllComment(@PathVariable("size") int size, @PathVariable("page") int page) {
         Page<Comment> allCommentByPage = commentService.getAllCommentByPage(size, page);
         return new Result(true, StatusCode.OK, "查询成功",

@@ -1,7 +1,9 @@
 package com.sicau.platform.service;
 
+import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.CommentDao;
 import com.sicau.platform.dao.UserDetailDao;
+import com.sicau.platform.entity.Admin;
 import com.sicau.platform.entity.Comment;
 import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.UserDetail;
@@ -28,6 +30,8 @@ public class CommentService {
     HostHolder hostHolder;
     @Autowired
     UserDetailDao userDetailDao;
+    @Autowired
+    AdminDao adminDao;
 
     public void addComment(Comment comment) {
         comment.setCommentId(IdGenerator.nextId());
@@ -53,8 +57,14 @@ public class CommentService {
     }
 
     public boolean deleteComment(Long commentId) {
-        commentDao.deleteById(commentId);
-        return true;
+        String userAccount = hostHolder.getUser().getAccount();
+        Long userId = hostHolder.getUser().getUserid();
+        Admin byAdminId = adminDao.getByAdminId(userId);
+        if (byAdminId != null || userId.equals(commentDao.findById(commentId).get().getUserId())) {
+            commentDao.deleteById(commentId);
+            return true;
+        }
+        return false;
     }
 
     public Page<Comment> getAllCommentByPage(int size, int page) {
