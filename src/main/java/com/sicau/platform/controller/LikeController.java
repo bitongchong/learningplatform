@@ -5,6 +5,7 @@ import com.sicau.platform.entity.Result;
 import com.sicau.platform.entity.StatusCode;
 import com.sicau.platform.service.LikeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class LikeController {
         return new Result(true, StatusCode.OK, "查询成功", likeStatus);
     }
 
-    @GetMapping("/cancelLike")
+    @DeleteMapping("/cancelLike")
     public Result cancelLike(Long articleId) {
         boolean cancelLike = likeService.cancelLike(articleId);
         return cancelLike ? new Result(true, StatusCode.OK, "取消点赞成功")
