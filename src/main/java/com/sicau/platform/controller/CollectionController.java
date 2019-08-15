@@ -32,8 +32,8 @@ public class CollectionController {
     }
 
     @DeleteMapping("/cancelCollection")
-    public Result cancelCollection(Long collectionId) {
-        collectionRecordService.cancelCollection(collectionId);
+    public Result cancelCollection(Long articleId) {
+        collectionRecordService.cancelCollection(articleId);
         return new Result(true, StatusCode.OK, "删除成功");
     }
 

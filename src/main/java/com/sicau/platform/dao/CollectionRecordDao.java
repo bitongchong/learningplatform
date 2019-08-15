@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  */
 public interface CollectionRecordDao   extends JpaRepository<CollectionRecord, Long>, JpaSpecificationExecutor<CollectionRecord> {
     CollectionRecord findByUserId(Long userId);
+    void deleteByArticleIdAndUserId(Long articleId, Long userId);
 }

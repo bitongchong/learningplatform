@@ -60,7 +60,7 @@ public class CollectionRecordService {
         return collectionRecordDao.findAll(specification, of);
     }
 
-    public void cancelCollection(Long collectionId) {
-        collectionRecordDao.deleteById(collectionId);
+    public void cancelCollection(Long articleId) {
+        collectionRecordDao.deleteByArticleIdAndUserId(articleId, hostHolder.getUser().getUserid());
     }
 }
