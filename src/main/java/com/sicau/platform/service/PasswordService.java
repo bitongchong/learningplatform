@@ -39,7 +39,7 @@ public class PasswordService {
 
     public String findEmailByUserId(Long userId) {
         UserDetail userDetail = userDetailDao.findBySid(userId);
-        if (Objects.isNull(userDetail.getEmail())) {
+        if (Objects.isNull(userDetail) && Objects.isNull(userDetail.getEmail())) {
             return null;
         } else {
             return userDetail.getEmail();
@@ -76,7 +76,9 @@ public class PasswordService {
         long token = IdGenerator.nextId();
         Date now = new Date();
         now.setTime(10 * 60 * 1000 + now.getTime());
-        PasswordToken passwordToken = PasswordToken.builder().token(token).account(hostHolder.getUser()
+        User userEntity = userDao.findByUserid(userId);
+
+        PasswordToken passwordToken = PasswordToken.builder().token(token).account(userEntity
                 .getAccount()).status(0).expired(now).build();
         addPasswordToken(passwordToken);
         boolean sendEmailResult = mailSender.sendEmail(email, "密码找回邮件", token);

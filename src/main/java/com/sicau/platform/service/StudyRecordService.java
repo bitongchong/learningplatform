@@ -33,6 +33,7 @@ public class StudyRecordService {
     @Value("${read_time}")
     Integer timeNeedToRead;
     private static final Integer ONE_MINITE = 60 * 1000;
+    private static final Integer ONE_SECOND = 1000;
 
     public boolean initRecord(Article article) {
         StudyRecord findRecord = studyRecordDao.findRecord(article.getArticleId(), hostHolder.getUser().getUserid());
