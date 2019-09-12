@@ -83,7 +83,7 @@ public class FileController {
             OutputStream os = response.getOutputStream();
 
             byte[] buff = new byte[1024];
-            int len;
+            int len = -1;
             while ((len = inStream.read(buff)) > 0) {
                 os.write(buff, 0, len);
             }
