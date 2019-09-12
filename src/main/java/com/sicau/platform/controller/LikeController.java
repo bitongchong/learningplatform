@@ -3,8 +3,7 @@ package com.sicau.platform.controller;
 import com.sicau.platform.entity.Like;
 import com.sicau.platform.entity.Result;
 import com.sicau.platform.entity.StatusCode;
-import com.sicau.platform.service.LikeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sicau.platform.service.impl.LikeService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class LikeController {
-    @Autowired
-    LikeService likeService;
+    private final LikeService likeService;
+
+    public LikeController(LikeService likeService) {
+        this.likeService = likeService;
+    }
 
     @PostMapping("/addLike")
     public Result addLike(Like like) {

@@ -7,7 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.unit.DataSize;
 
 import javax.servlet.MultipartConfigElement;
-
+/**
+ * @author liuyuehe
+ * @description multipart文件大小设置
+ * @date 2019/9/12
+ */
 @Configuration
 public class MultipartFileSizeConfiguration {
     @Bean

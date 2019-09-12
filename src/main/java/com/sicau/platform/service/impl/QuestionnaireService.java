@@ -1,4 +1,4 @@
-package com.sicau.platform.service;
+package com.sicau.platform.service.impl;
 
 import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.QuestionnaireDao;
@@ -7,7 +7,6 @@ import com.sicau.platform.dao.UserDetailDao;
 import com.sicau.platform.entity.*;
 import com.sicau.platform.util.IdGenerator;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,58 +16,59 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Optional;
 
+/**
+ * @author liuyuehe
+ */
 @Service
 public class QuestionnaireService {
-    @Autowired
-    QuestionnaireDao questionnaireDao;
-    @Autowired
-    QuestionnaireRecordDao questionnaireRecord;
-    @Autowired
-    HostHolder hostHolder;
-    @Autowired
-    QuestionnaireRecordDao questionnaireRecordDao;
-    @Autowired
-    AdminDao adminDao;
-    @Autowired
-    UserDetailDao userDetailDao;
+    private final QuestionnaireDao questionnaireDao;
+    private final HostHolder hostHolder;
+    private final QuestionnaireRecordDao questionnaireRecordDao;
+    private final AdminDao adminDao;
+    private final UserDetailDao userDetailDao;
 
-    public boolean addQuestionnaire(String url, String title) {
+    public QuestionnaireService(QuestionnaireDao questionnaireDao, HostHolder hostHolder, QuestionnaireRecordDao questionnaireRecordDao, AdminDao adminDao, UserDetailDao userDetailDao) {
+        this.questionnaireDao = questionnaireDao;
+        this.hostHolder = hostHolder;
+        this.questionnaireRecordDao = questionnaireRecordDao;
+        this.adminDao = adminDao;
+        this.userDetailDao = userDetailDao;
+    }
+
+    public void addQuestionnaire(String url, String title) {
         Questionnaire questionnaire = Questionnaire.builder().qid(IdGenerator.nextId()).title(title)
-                .updatetime(new Date()).url(url).userid(hostHolder.getUser()
-                        .getUserid()).build();
+                .updateTime(new Date()).url(url).userId(hostHolder.getUser()
+                        .getUserId()).build();
         questionnaireDao.save(questionnaire);
-        return true;
     }
 
     public Page<Questionnaire> getAllQuestionnaireByPage(int size, int page) {
         page -= 1;
-        Sort sort = new Sort(Sort.Direction.DESC, "updatetime");
+        Sort sort = new Sort(Sort.Direction.DESC, "updateTime");
         PageRequest of = PageRequest.of(page, size, sort);
 
         return questionnaireDao.findAll(of);
     }
 
 
-    public boolean addQuertionnaireRecords(String resultImgUrl, Long questionnaireId) {
+    public void addQuestionnaireRecords(String resultImgUrl, Long questionnaireId) {
         Optional<Questionnaire> questionnaireDaoById = questionnaireDao.findById(questionnaireId);
         if (!questionnaireDaoById.isPresent()) {
-            return false;
+            return;
         }
         String questionnaireTitle = questionnaireDaoById.get().getTitle();
         User user = hostHolder.getUser();
         QuestionnaireRecord questionnaireRecord = QuestionnaireRecord.builder().finishTime(new Date()).recordId(IdGenerator.nextId())
-                .resultImgUrl(resultImgUrl).questionnaireTitle(questionnaireTitle).userId(user.getUserid()).status(0)
-                .userName(getUserName(user.getUserid())).build();
+                .resultImgUrl(resultImgUrl).questionnaireTitle(questionnaireTitle).userId(user.getUserId()).status(0)
+                .userName(getUserName(user.getUserId())).build();
         questionnaireRecordDao.save(questionnaireRecord);
-        return true;
     }
 
 
     public Page<QuestionnaireRecord> getAllQuestionnaireRecordsByPage(int size, int page) {
         page -= 1;
         Sort sort = new Sort(Sort.Direction.DESC, "finishTime");
-        // todo 多处使用到管理员权限验证，考虑独立成拦截器或者上权限框架
-        Long userId = hostHolder.getUser().getUserid();
+        Long userId = hostHolder.getUser().getUserId();
         Admin byAdminId = adminDao.getByAdminId(userId);
         if (byAdminId != null) {
             PageRequest of = PageRequest.of(page, size, sort);
@@ -80,6 +80,7 @@ public class QuestionnaireService {
             return questionnaireRecordDao.findAll(specification, pageRequest);
         }
     }
+
     private String getUserName(Long sid) {
         UserDetail userDetail = userDetailDao.findBySid(sid);
         if (ObjectUtils.isNotEmpty(userDetail)) {
@@ -88,6 +89,7 @@ public class QuestionnaireService {
             return null;
         }
     }
+
     public boolean changeTheStatus(Long questionnaireRecordId) {
         Optional<QuestionnaireRecord> byId = questionnaireRecordDao.findById(questionnaireRecordId);
         if (byId.isPresent()) {

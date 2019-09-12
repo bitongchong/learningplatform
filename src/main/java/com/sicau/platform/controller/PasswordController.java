@@ -5,9 +5,8 @@ import com.sicau.platform.entity.PasswordToken;
 import com.sicau.platform.entity.Result;
 import com.sicau.platform.entity.StatusCode;
 import com.sicau.platform.exception.EmailSendFailException;
-import com.sicau.platform.service.PasswordService;
-import com.sicau.platform.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sicau.platform.service.impl.PasswordService;
+import com.sicau.platform.service.impl.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,16 +23,19 @@ import java.util.Objects;
 
 @RestController
 public class PasswordController {
-    @Autowired
-    HostHolder hostHolder;
-    @Autowired
-    UserService userService;
-    @Autowired
-    PasswordService passwordService;
+    private final HostHolder hostHolder;
+    private final UserService userService;
+    private final PasswordService passwordService;
+
+    public PasswordController(HostHolder hostHolder, UserService userService, PasswordService passwordService) {
+        this.hostHolder = hostHolder;
+        this.userService = userService;
+        this.passwordService = passwordService;
+    }
 
     @PostMapping("/forget")
     public Result findPassword(String account) throws EmailSendFailException {
-        Long userId = userService.findByUserAccount(account).getUserid();
+        Long userId = userService.findByUserAccount(account).getUserId();
         String email = passwordService.findEmailByUserId(userId);
         if (Objects.isNull(email)) {
             return new Result(false, StatusCode.EMAILUNKNOWN, "未完善邮箱信息，请联系管理员进行密码找回");

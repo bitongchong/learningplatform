@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
+/**
+ * @author boot liu
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,8 +24,8 @@ public class Questionnaire {
     @Id
     private Long qid;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updatetime;
+    private Date updateTime;
     private String url;
-    private Long userid;
+    private Long userId;
     private String title;
 }

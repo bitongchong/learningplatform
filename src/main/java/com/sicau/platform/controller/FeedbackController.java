@@ -1,8 +1,7 @@
 package com.sicau.platform.controller;
 
 import com.sicau.platform.entity.*;
-import com.sicau.platform.service.FeedbackService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sicau.platform.service.impl.FeedbackService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class FeedbackController {
-    @Autowired
-    FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
+
+    public FeedbackController(FeedbackService feedbackService) {
+        this.feedbackService = feedbackService;
+    }
 
     @PostMapping("/feedback")
     public Result initFeedback(Feedback feedback) {
@@ -30,6 +32,6 @@ public class FeedbackController {
     public Result showFeedback(@PathVariable("size") int size, @PathVariable("page") int page) {
         Page<Feedback> feedback = feedbackService.showFeedback(size,page);
         return new Result(true, StatusCode.OK, "查询成功",
-                new PageResult<Feedback>(feedback.getTotalElements(), feedback.getContent()));
+                new PageResult<>(feedback.getTotalElements(), feedback.getContent()));
     }
 }

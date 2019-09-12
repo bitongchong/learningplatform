@@ -4,8 +4,7 @@ import com.sicau.platform.entity.CollectionRecord;
 import com.sicau.platform.entity.PageResult;
 import com.sicau.platform.entity.Result;
 import com.sicau.platform.entity.StatusCode;
-import com.sicau.platform.service.CollectionRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sicau.platform.service.impl.CollectionRecordService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class CollectionController {
-    @Autowired
-    CollectionRecordService collectionRecordService;
+    private final CollectionRecordService collectionRecordService;
+
+    public CollectionController(CollectionRecordService collectionRecordService) {
+        this.collectionRecordService = collectionRecordService;
+    }
 
     @PostMapping("/addCollection")
     public Result addCollection(CollectionRecord collectionRecord) {
@@ -43,6 +45,6 @@ public class CollectionController {
     public Result getAllCollectionRecord(@PathVariable("page") int page, @PathVariable("size") int size) {
         Page<CollectionRecord> allCollectionRecord = collectionRecordService.getAllCollectionRecord(page, size);
         return new Result(true, StatusCode.OK, "获取成功",
-                new PageResult<CollectionRecord>(allCollectionRecord.getTotalElements(), allCollectionRecord.getContent()));
+                new PageResult<>(allCollectionRecord.getTotalElements(), allCollectionRecord.getContent()));
     }
 }

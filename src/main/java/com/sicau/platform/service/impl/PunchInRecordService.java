@@ -1,11 +1,10 @@
-package com.sicau.platform.service;
+package com.sicau.platform.service.impl;
 
 import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.PunchInRecordDao;
 import com.sicau.platform.dao.UserDetailDao;
 import com.sicau.platform.entity.*;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,40 +21,41 @@ import java.util.Date;
  */
 @Service
 public class PunchInRecordService {
-    @Autowired
-    HostHolder hostHolder;
-    @Autowired
-    PunchInRecordDao punchInRecordDao;
-    @Autowired
-    AdminDao adminDao;
-    @Autowired
-    UserDetailDao userDetailDao;
+    private final HostHolder hostHolder;
+    private final PunchInRecordDao punchInRecordDao;
+    private final AdminDao adminDao;
+    private final UserDetailDao userDetailDao;
     @Value("${punch_in_number}")
     Integer punchInNumber;
 
+    public PunchInRecordService(HostHolder hostHolder, PunchInRecordDao punchInRecordDao, AdminDao adminDao, UserDetailDao userDetailDao) {
+        this.hostHolder = hostHolder;
+        this.punchInRecordDao = punchInRecordDao;
+        this.adminDao = adminDao;
+        this.userDetailDao = userDetailDao;
+    }
+
     /**
      * 判断是否能够打卡
-     *
-     * @return
+     * @return -
      */
-    public boolean canPunchIn() {
-        Long userId = hostHolder.getUser().getUserid();
+    boolean canPunchIn() {
+        Long userId = hostHolder.getUser().getUserId();
         if (!isPunchIn()) {
-            Integer readAritcleNumber = punchInRecordDao.findReadAritcleNumber(userId);
-            return readAritcleNumber >= punchInNumber;
+            Integer readArticleNumber = punchInRecordDao.findReadAritcleNumber(userId);
+            return readArticleNumber >= punchInNumber;
         }
         return false;
     }
 
     /**
      * 打卡接口
-     *
-     * @return
+     * @return -
      */
     boolean punchIn() {
         User user = hostHolder.getUser();
         PunchInRecord punchInRecord = PunchInRecord.builder().punchInTime(new Date()).status(1).userId(user
-                .getUserid()).userName(getUserName(user.getUserid())).build();
+                .getUserId()).userName(getUserName(user.getUserId())).build();
         punchInRecordDao.save(punchInRecord);
         return true;
     }
@@ -71,11 +71,10 @@ public class PunchInRecordService {
 
     /**
      * 今日是否打卡
-     *
-     * @return
-     */
+     * @return -
+      */
     public boolean isPunchIn() {
-        Long userId = hostHolder.getUser().getUserid();
+        Long userId = hostHolder.getUser().getUserId();
         Integer allByUserId = punchInRecordDao.findTodayPunchInRecord(userId);
         return allByUserId.equals(1);
     }
@@ -83,7 +82,7 @@ public class PunchInRecordService {
     public Page<PunchInRecord> getPunchInRecord(int size, int page) {
         page -= 1;
         Sort sort = new Sort(Sort.Direction.DESC, "punchInTime");
-        Long userId = hostHolder.getUser().getUserid();
+        Long userId = hostHolder.getUser().getUserId();
         Admin byAdminId = adminDao.getByAdminId(userId);
         if (byAdminId != null) {
             PageRequest of = PageRequest.of(page, size, sort);

@@ -1,4 +1,4 @@
-package com.sicau.platform.service;
+package com.sicau.platform.service.impl;
 
 import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.CommentDao;
@@ -9,8 +9,6 @@ import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.UserDetail;
 import com.sicau.platform.util.IdGenerator;
 import org.apache.commons.lang3.ObjectUtils;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,21 +22,24 @@ import java.util.List;
  */
 @Service
 public class CommentService {
-    @Autowired
-    CommentDao commentDao;
-    @Autowired
-    HostHolder hostHolder;
-    @Autowired
-    UserDetailDao userDetailDao;
-    @Autowired
-    AdminDao adminDao;
+    private final CommentDao commentDao;
+    private final HostHolder hostHolder;
+    private final UserDetailDao userDetailDao;
+    private final AdminDao adminDao;
+
+    public CommentService(CommentDao commentDao, HostHolder hostHolder, UserDetailDao userDetailDao, AdminDao adminDao) {
+        this.commentDao = commentDao;
+        this.hostHolder = hostHolder;
+        this.userDetailDao = userDetailDao;
+        this.adminDao = adminDao;
+    }
 
     public void addComment(Comment comment) {
         comment.setCommentId(IdGenerator.nextId());
         comment.setCreateTime(new Date());
-        Long userid = hostHolder.getUser().getUserid();
-        comment.setUserId(userid);
-        comment.setUserName(getUserName(userid));
+        Long userId = hostHolder.getUser().getUserId();
+        comment.setUserId(userId);
+        comment.setUserName(getUserName(userId));
         // 当然，这儿可能失败，but don`t want to fix it :)
         commentDao.save(comment);
     }
@@ -57,9 +58,11 @@ public class CommentService {
     }
 
     public boolean deleteComment(Long commentId) {
-        String userAccount = hostHolder.getUser().getAccount();
-        Long userId = hostHolder.getUser().getUserid();
+        Long userId = hostHolder.getUser().getUserId();
         Admin byAdminId = adminDao.getByAdminId(userId);
+        if (!commentDao.findById(commentId).isPresent()) {
+            return false;
+        }
         if (byAdminId != null || userId.equals(commentDao.findById(commentId).get().getUserId())) {
             commentDao.deleteById(commentId);
             return true;

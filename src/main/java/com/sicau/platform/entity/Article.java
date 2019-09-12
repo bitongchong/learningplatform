@@ -11,6 +11,9 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author boot liu
+ */
 @Entity
 @Data
 @AllArgsConstructor
@@ -20,7 +23,7 @@ public class Article implements Serializable {
     @Id
     private Long articleId;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updatetime;
+    private Date updateTime;
     private String title;
     private String content;
     private String author;

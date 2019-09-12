@@ -4,8 +4,7 @@ import com.sicau.platform.entity.Comment;
 import com.sicau.platform.entity.PageResult;
 import com.sicau.platform.entity.Result;
 import com.sicau.platform.entity.StatusCode;
-import com.sicau.platform.service.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sicau.platform.service.impl.CommentService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +17,11 @@ import java.util.List;
  */
 @RestController
 public class CommentController {
-    @Autowired
-    CommentService commentService;
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @PostMapping("/addComment")
     public Result addComment(Comment comment) {
@@ -44,6 +46,6 @@ public class CommentController {
     public Result showAllComment(@PathVariable("size") int size, @PathVariable("page") int page) {
         Page<Comment> allCommentByPage = commentService.getAllCommentByPage(size, page);
         return new Result(true, StatusCode.OK, "查询成功",
-                new PageResult<Comment>(allCommentByPage.getTotalElements(), allCommentByPage.getContent()));
+                new PageResult<>(allCommentByPage.getTotalElements(), allCommentByPage.getContent()));
     }
 }

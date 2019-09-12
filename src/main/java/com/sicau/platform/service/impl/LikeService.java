@@ -1,17 +1,14 @@
-package com.sicau.platform.service;
+package com.sicau.platform.service.impl;
 
 import com.sicau.platform.dao.LikeDao;
 import com.sicau.platform.entity.HostHolder;
 import com.sicau.platform.entity.Like;
 import com.sicau.platform.util.IdGenerator;
 import org.apache.commons.lang3.ObjectUtils;
-import org.omg.PortableInterceptor.INACTIVE;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.Optional;
 
 /**
  * @author liuyuehe
@@ -21,15 +18,18 @@ import java.util.Optional;
 @Service
 @Transactional(rollbackOn = Exception.class)
 public class LikeService {
-    @Autowired
-    HostHolder hostHolder;
-    @Autowired
-    LikeDao likeDao;
+    private final HostHolder hostHolder;
+    private final LikeDao likeDao;
+
+    public LikeService(HostHolder hostHolder, LikeDao likeDao) {
+        this.hostHolder = hostHolder;
+        this.likeDao = likeDao;
+    }
 
     public boolean addLike(Like like) {
         like.setCreateTime(new Date());
         like.setLikeId(IdGenerator.nextId());
-        like.setUserId(hostHolder.getUser().getUserid());
+        like.setUserId(hostHolder.getUser().getUserId());
         boolean likeStatus = getLikeStatus(like.getArticleId());
         if (likeStatus) {
             return false;
@@ -39,17 +39,16 @@ public class LikeService {
     }
 
     public boolean cancelLike(Long articleId) {
-        likeDao.deleteLikeByArticleIdAndAndUserId(articleId, hostHolder.getUser().getUserid());
+        likeDao.deleteLikeByArticleIdAndAndUserId(articleId, hostHolder.getUser().getUserId());
         return true;
     }
 
     public boolean getLikeStatus(Long articleId) {
-        Like like = likeDao.findLikeByArticleIdAndUserId(articleId, hostHolder.getUser().getUserid());
+        Like like = likeDao.findLikeByArticleIdAndUserId(articleId, hostHolder.getUser().getUserId());
         return ObjectUtils.isNotEmpty(like);
     }
 
     public Integer getArticleLikeCount(Long articleId) {
-        Integer likeCount = likeDao.getLikeCount(articleId);
-        return likeCount;
+        return likeDao.getLikeCount(articleId);
     }
 }

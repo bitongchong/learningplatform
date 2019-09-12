@@ -11,6 +11,9 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author liuyuehe
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +24,7 @@ public class StudyRecord  implements Serializable {
     private Long recordId;
     private Long articleId;
     private String articleTitle;
-    private Long userid;
+    private Long userId;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date openTime;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

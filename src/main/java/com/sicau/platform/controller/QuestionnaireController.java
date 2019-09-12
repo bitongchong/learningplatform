@@ -1,21 +1,28 @@
 package com.sicau.platform.controller;
 
 import com.sicau.platform.entity.*;
-import com.sicau.platform.service.QuestionnaireService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sicau.platform.service.impl.QuestionnaireService;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author boot liu
+ * @author liuyuehe
+ * @description 问卷相关Controller
+ * @date 2019/8/14
  */
 @RestController
 public class QuestionnaireController {
-    @Autowired
-    QuestionnaireService questionnaireService;
+    private final QuestionnaireService questionnaireService;
+
+    public QuestionnaireController(QuestionnaireService questionnaireService) {
+        this.questionnaireService = questionnaireService;
+    }
 
     @PostMapping("/addQuestionnaire")
-    public Result addQuestionnaire( String url,
+    public Result addQuestionnaire(String url,
                                    String title) {
         questionnaireService.addQuestionnaire(url, title);
         return new Result(true, StatusCode.OK, "问卷信息添加成功");
@@ -25,12 +32,12 @@ public class QuestionnaireController {
     public Result getAllQuestionnairesByPage(@PathVariable("size") int size, @PathVariable("page") int page) {
         Page<Questionnaire> questionnairesByPage = questionnaireService.getAllQuestionnaireByPage(size, page);
         return new Result(true, StatusCode.OK, "查询成功",
-                new PageResult<Questionnaire>(questionnairesByPage.getTotalElements(), questionnairesByPage.getContent()));
+                new PageResult<>(questionnairesByPage.getTotalElements(), questionnairesByPage.getContent()));
     }
 
     @PostMapping("/addQuestionnaireRecords")
     public Result addQuestionnaireRecords(String resultImgUrl, Long questionnaireId) {
-        questionnaireService.addQuertionnaireRecords(resultImgUrl, questionnaireId);
+        questionnaireService.addQuestionnaireRecords(resultImgUrl, questionnaireId);
         return new Result(true, StatusCode.OK, "问卷结果添加成功");
     }
 
@@ -38,7 +45,7 @@ public class QuestionnaireController {
     public Result getAllQuestionnaireRecord(@PathVariable("size") int size, @PathVariable("page") int page) {
         Page<QuestionnaireRecord> allQuestionnaireRecordsByPage = questionnaireService.getAllQuestionnaireRecordsByPage(size, page);
         return new Result(true, StatusCode.OK, "查询成功",
-                new PageResult<QuestionnaireRecord>(allQuestionnaireRecordsByPage.getTotalElements(), allQuestionnaireRecordsByPage.getContent()));
+                new PageResult<>(allQuestionnaireRecordsByPage.getTotalElements(), allQuestionnaireRecordsByPage.getContent()));
     }
 
     @GetMapping("/passTheRecord")

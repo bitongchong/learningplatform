@@ -4,9 +4,8 @@ import com.sicau.platform.entity.FileEntity;
 import com.sicau.platform.entity.PageResult;
 import com.sicau.platform.entity.Result;
 import com.sicau.platform.entity.StatusCode;
-import com.sicau.platform.service.FileService;
+import com.sicau.platform.service.impl.FileService;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,21 +16,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Objects;
 
 /**
  * @author boot liu
  */
 @RestController
 public class FileController {
-    @Autowired
-    FileService fileService;
+    private final FileService fileService;
+
+    public FileController(FileService fileService) {
+        this.fileService = fileService;
+    }
 
     @GetMapping("/file/{fileType}/{size}/{page}")
     public Result getFileByPage(@PathVariable("fileType") Integer fileType, @PathVariable("size") Integer size,
                                 @PathVariable("page") Integer page) {
         Page<FileEntity> files = fileService.getFileByType(fileType, page, size);
-        return new Result(true, StatusCode.OK, "查询成功", new PageResult<FileEntity>(files.getTotalElements(), files.getContent()));
+        return new Result(true, StatusCode.OK, "查询成功", new PageResult<>(files.getTotalElements(), files.getContent()));
     }
 
     @PostMapping("/file/upload")
@@ -42,7 +43,6 @@ public class FileController {
         if (ObjectUtils.isEmpty(fileId)) {
             return new Result(false, StatusCode.UPDATEERROR, "文件上传失败，请检查文件格式");
         }
-        // TODO 字符串拼接，资源消耗大，不优雅，用guava来优化一下
         String url = "/file/download?fileId=" + fileId;
         if (findFile(fileId)) {
             return new Result(true, StatusCode.OK, "文件上传成功", url);
@@ -83,7 +83,7 @@ public class FileController {
             OutputStream os = response.getOutputStream();
 
             byte[] buff = new byte[1024];
-            int len = -1;
+            int len;
             while ((len = inStream.read(buff)) > 0) {
                 os.write(buff, 0, len);
             }

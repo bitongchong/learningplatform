@@ -24,7 +24,7 @@ import java.io.Serializable;
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    private Long userid;
+    private Long userId;
     private String account;
     private String password;
     private String permission;

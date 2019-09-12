@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class CrossDomainConfiguration implements WebMvcConfigurer {
-    static final String[] ORIGINS = new String[] { "GET", "POST", "PUT", "DELETE" };
+    private static final String[] ORIGINS = new String[] { "GET", "POST", "PUT", "DELETE" };
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowedOrigins("*").allowCredentials(true).allowedMethods(ORIGINS)

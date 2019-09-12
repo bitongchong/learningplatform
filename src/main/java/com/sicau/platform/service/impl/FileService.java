@@ -1,4 +1,4 @@
-package com.sicau.platform.service;
+package com.sicau.platform.service.impl;
 
 import com.sicau.platform.dao.AdminDao;
 import com.sicau.platform.dao.FileDao;
@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * @author boot liu
+ * @author liuyuehe
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -47,12 +47,9 @@ public class FileService {
 
     public FileEntity getFileById(Long fileId) {
         FileEntity fileEntity;
-/*        if (fileDao.findById(fileId).isPresent()) {
-            throw new RuntimeException("文件获取失败");
-        }*/
         Optional<FileEntity> optionalFileEntity = fileDao.findById(fileId);
         boolean result = fileDao.findById(fileId).isPresent();
-        if (!result) {
+        if (!result || !optionalFileEntity.isPresent()) {
             return null;
         }
         fileEntity = optionalFileEntity.get();
@@ -61,7 +58,7 @@ public class FileService {
 
     public Long uploadFile(MultipartFile file, String path, Integer fileType) throws Exception {
         if (Objects.isNull(file)) {
-            return  null;
+            return null;
         }
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileType(fileType);
@@ -75,35 +72,36 @@ public class FileService {
         return fileId;
     }
 
-    public String saveFileToServer(MultipartFile multifile, String path)
+    public String saveFileToServer(MultipartFile multiFile, String path)
             throws IOException {
         // 创建目录
         File dir = new File(path);
         if (!dir.exists()) {
-            dir.setWritable(true);
-            dir.mkdir();
+            boolean b = dir.setWritable(true);
+            boolean mkdir = dir.mkdir();
+            if (!b || !mkdir) {
+                throw new IOException("文件写入失败");
+            }
         }
         // 读取文件流并保持在指定路径
-        InputStream inputStream = multifile.getInputStream();
+        InputStream inputStream = multiFile.getInputStream();
         OutputStream outputStream = new FileOutputStream(path
-                + multifile.getOriginalFilename());
-        byte[] buffer = multifile.getBytes();
-        int bytesum = 0;
-        int byteread = 0;
-        while ((byteread = inputStream.read(buffer)) != -1) {
-            bytesum += byteread;
-            outputStream.write(buffer, 0, byteread);
+                + multiFile.getOriginalFilename());
+        byte[] buffer = multiFile.getBytes();
+        int byteRead;
+        while ((byteRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, byteRead);
             outputStream.flush();
         }
         outputStream.close();
         inputStream.close();
 
-        return path + multifile.getOriginalFilename();
+        return path + multiFile.getOriginalFilename();
     }
 
     public boolean deleteFile(Long fileId) {
         String userAccount = hostHolder.getUser().getAccount();
-        Long userId = hostHolder.getUser().getUserid();
+        Long userId = hostHolder.getUser().getUserId();
         Admin byAdminId = adminDao.getByAdminId(userId);
         if (byAdminId != null || userAccount.equals(fileDao.findAllByFileId(fileId).getFileOwner())) {
             fileDao.deleteFileEntityByFileId(fileId);

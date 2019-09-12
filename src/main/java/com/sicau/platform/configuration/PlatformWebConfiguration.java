@@ -9,7 +9,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author boot liu
+ * @author liuyuehe
+ * @description 系统拦截器
+ * @date 2019/9/12
  */
 @Component
 public class PlatformWebConfiguration implements WebMvcConfigurer {
@@ -29,10 +31,6 @@ public class PlatformWebConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/article/**").excludePathPatterns("/regist").excludePathPatterns("/admin/login")
                 .excludePathPatterns("/admin/regist").excludePathPatterns("/file/download").excludePathPatterns("/file/**")
                 .excludePathPatterns("/findPassword/*").excludePathPatterns("/forget");
-/*
-跨域问题拦截器：
-registry.addInterceptor(crossDomainInterceptor);
-*/
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 

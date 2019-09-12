@@ -1,25 +1,26 @@
-package com.sicau.platform.service;
+package com.sicau.platform.service.impl;
 
 import com.sicau.platform.dao.FeedbackDao;
 import com.sicau.platform.entity.Feedback;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * @author liuyuehe
- * @description
+ * @description -
  * @date 2019/8/13
  */
 @Service
 public class FeedbackService {
-    @Autowired
-    FeedbackDao feedbackDao;
+    private final FeedbackDao feedbackDao;
+
+    public FeedbackService(FeedbackDao feedbackDao) {
+        this.feedbackDao = feedbackDao;
+    }
 
     public boolean initialFeedback(Feedback feedback) {
         feedback.setCreateTime(new Date());
