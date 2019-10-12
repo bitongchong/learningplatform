@@ -27,7 +27,7 @@ public interface ArticleDao extends JpaRepository<Article, Long>, JpaSpecificati
      * @param type 文章的类型code
      * @return 分页查询结果
      */
-    @Query(value = "SELECT * FROM article WHERE TYPE = ?2 ORDER BY updatetime DESC LIMIT 0,?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM article WHERE TYPE = ?2 ORDER BY update_time DESC LIMIT 0,?1", nativeQuery = true)
     List<Article> find(@Param("size") Integer size, @Param("type") Integer type);
 
     /**

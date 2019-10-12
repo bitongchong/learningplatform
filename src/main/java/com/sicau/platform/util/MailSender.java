@@ -30,7 +30,7 @@ public class MailSender implements InitializingBean {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
             // todo 写死的，应添加到apollo中
-            String result = "点击链接修改密码：http://117.50.73.238:8080/findPassword/" + token;
+            String result = "点击链接修改密码：http://113.54.11.44/findPassword/" + token;
             mimeMessageHelper.setTo(to);
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setSubject(subject);

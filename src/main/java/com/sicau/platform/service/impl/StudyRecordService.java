@@ -66,7 +66,7 @@ public class StudyRecordService {
             return new Result(false, StatusCode.ARTICLREADEDED, "本篇文章已经学习过了");
         }
         studyRecord.setStatus(RecordStatusEnum.FINISH.getCode());
-        if (now.getTime() - studyRecord.getOpenTime().getTime() < timeNeedToRead * TimeEnum.ONE_MINITE.getTime()) {
+        if (now.getTime() - studyRecord.getOpenTime().getTime() < timeNeedToRead * TimeEnum.ONE_MINITE.getTime() * 1000) {
             return new Result(false, StatusCode.ARTICLRUNFINISH, "阅读时间不够");
         }
         studyRecord.setAccomplishTime(now);

@@ -76,13 +76,14 @@ public class FileService {
             throws IOException {
         // 创建目录
         File dir = new File(path);
-        if (!dir.exists()) {
+/**        if (!dir.exists()) {
             boolean b = dir.setWritable(true);
             boolean mkdir = dir.mkdir();
             if (!b || !mkdir) {
                 throw new IOException("文件写入失败");
             }
         }
+ **/
         // 读取文件流并保持在指定路径
         InputStream inputStream = multiFile.getInputStream();
         OutputStream outputStream = new FileOutputStream(path

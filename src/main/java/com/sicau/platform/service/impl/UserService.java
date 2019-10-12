@@ -87,7 +87,7 @@ public class UserService {
         ticket.setUserId(userId);
         ticket.setStatus(0);
         Date now = new Date();
-        now.setTime(7 * TimeEnum.ONE_DAY.getTime() + now.getTime());
+        now.setTime(7 * 1000 * TimeEnum.ONE_DAY.getTime() + now.getTime());
         ticket.setExpired(now);
         ticket.setTicket(UUID.randomUUID().toString().replaceAll("-", ""));
         loginTicketDao.save(ticket);

@@ -14,7 +14,7 @@ public interface PunchInRecordDao extends JpaSpecificationExecutor<PunchInRecord
      * @param userId 用户id
      * @return 用户阅读文章数量
      */
-    @Query(value = "SELECT count(*) FROM study_record WHERE status=1 AND DATEDIFF(accomplish_time,NOW())=0 AND userid = ?1", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM study_record WHERE status=1 AND DATEDIFF(accomplish_time,NOW())=0 AND user_id = ?1", nativeQuery = true)
     public Integer findReadAritcleNumber(Long userId);
     // todo 这儿的userid形式和上一个不同，是由于数据库设计时字段名不同。需要统一
     @Query(value = "SELECT count(*) FROM punch_in_record WHERE status=1 AND DATEDIFF(punch_in_time,NOW())=0 AND user_id = ?1", nativeQuery = true)
